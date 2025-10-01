@@ -1,0 +1,348 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toxic Comments Classification</title>
+    <style>
+      /* General Body Styling */
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #e9eae0;
+        color: #0e4714;
+        overflow: hidden;
+      }
+
+      /* Main container */
+      .container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 40px;
+      }
+
+      /* Left Section - Title and Subtitle */
+      .left-section {
+        width: 38%;
+        margin-top: -5%;
+      }
+
+      .left-section h1 {
+        font-size: 4.3rem;
+        margin-left: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0;
+      }
+
+      .left-section p {
+        font-size: 1.2rem;
+        font-weight: normal;
+        margin-left: 2.5rem;
+        margin-top: 0;
+      }
+
+      /* Right Section */
+      .right-section {
+        width: 55%;
+        margin-top: -5%;
+        margin-right: 2%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 55px;
+      }
+
+      .step {
+        width: 120%;
+        display: block;
+        margin-top: 50px;
+      }
+
+      label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+        font-size: 14px;
+      }
+
+      textarea {
+        width: 80%;
+        padding: 10px;
+        font-size: 0.9rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        height: 130px;
+        margin-bottom: -25px;
+      }
+
+      input {
+        width: 70%;
+        padding: 10px;
+        font-size: 0.9rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      button {
+        background-color: #0e4714;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        border-radius: 5px;
+        width: auto;
+        align-self: flex-start;
+      }
+
+      button:hover {
+        background-color: #0c3e12;
+      }
+
+      /* Decorative Shapes */
+      .decorative {
+        position: absolute;
+        z-index: 1;
+      }
+
+      .shape1 {
+        top: -80px;
+        left: 10%;
+        width: 120px;
+        height: 200px;
+      }
+
+      .shape2 {
+        top: 60%;
+        left: 5%;
+        width: 150px;
+        height: 200px;
+      }
+
+      .shape3 {
+        bottom: 80%;
+        right: 5%;
+        width: 150px;
+        height: 200px;
+        z-index: -1;
+      }
+
+      .shape4 {
+        top: 85%;
+        right: 60%;
+        width: 150px;
+        height: 200px;
+      }
+
+      .shape5 {
+        top: 75%;
+        right: -1%;
+        width: 150px;
+        height: 200px;
+      }
+
+      .shape6 {
+        bottom: 19%;
+        right: 62.5%;
+        width: 40px;
+        height: 460px;
+      }
+
+      .toxicity-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 50px;
+        width: 100%;
+        padding: 10px;
+      }
+
+      .toxicity-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        width: 105%;
+      }
+
+      .toxicity-item label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        height: 14px;
+        display: flex;
+        align-items: center;
+      }
+
+      .toxicity-item input {
+        width: 90%;
+        padding: 10px;
+        height: 50px;
+        box-sizing: border-box;
+      }
+
+      /* Reset margins/padding to avoid spacing issues */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      h2 {
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Left Section -->
+      <div class="left-section">
+        <h1>
+          Toxic Comments <br />
+          Classification
+        </h1>
+        <p><strong>Implementing Hybrid LSTM-BERT Approach</strong></p>
+      </div>
+
+      <!-- Right Section -->
+      <div class="right-section">
+        <!-- Textarea for input -->
+        <div class="step">
+          <label for="userText">Enter the text for analysis:</label>
+          <textarea
+            id="userText"
+            placeholder="Type your text here..."
+          ></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button id="submitButton">Submit</button>
+
+        <!-- Detected toxic words -->
+        <div class="toxicity-grid">
+          <!-- Toxic Words - Column 1 -->
+          <div class="toxicity-item">
+            <h2 style="padding-bottom: 20px">BASELINE MODEL<br />(LSTM)</h2>
+            <label for="detectedToxicWords1">Word/s considered as toxic:</label>
+            <input type="text" id="detectedToxicWords1" disabled="" />
+          </div>
+
+          <!-- Toxic Words - Column 2 -->
+          <div class="toxicity-item">
+            <h2 style="padding-bottom: 15px">
+              PROPOSED MODEL<br />(LSTM-SSBERT)
+            </h2>
+            <label for="detectedToxicWords2">Word/s considered as toxic:</label>
+            <input type="text" id="detectedToxicWords2" disabled="" />
+          </div>
+
+          <!-- Toxicity Status - Column 3 -->
+          <div class="toxicity-item">
+            <label for="toxicityStatus"
+              ><b>Toxicity Status (0 = NOT TOXIC, 1 = TOXIC):</b></label
+            >
+            <textarea style="height: 60px; width: 445px;" type="text" id="toxicityStatus" disabled="" ></textarea>
+          </div>
+
+          <!-- Toxicity Status - Column 4 -->
+          <div class="toxicity-item">
+            <label for="toxicityStatus1"
+              ><b>Toxicity Status (0 = NOT TOXIC, 1 = TOXIC):</b></label
+            >
+            <textarea style="height: 60px; width: 445px;" type="text" id="toxicityStatus1" disabled="" ></textarea>
+          </div>
+
+          <!-- Time Complexity -->
+       <div class="toxicity-item">
+         <label>Inference time:</label>
+         <input type="text" id="baselineComplexity" disabled="" />
+       </div>
+
+       <div class="toxicity-item">
+         <label>Inference time:</label>
+         <input type="text" id="proposedComplexity" disabled="" />
+       </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Decorative Shapes -->
+    <img src="static/assets/vector1.svg" alt="" class="decorative shape1" />
+    <img src="static/assets/vector2.svg" alt="" class="decorative shape2" />
+    <img src="static/assets/vector3.svg" alt="" class="decorative shape3" />
+    <img src="static/assets/vector4.svg" alt="" class="decorative shape4" />
+    <img src="static/assets/vector5.svg" alt="" class="decorative shape5" />
+    <img src="static/assets/steps.png" alt="" class="decorative shape6" />
+
+<script>
+document.getElementById("submitButton").addEventListener("click", handleAnalyze);
+
+async function handleAnalyze() {
+  const textInput = document.getElementById("userText").value;
+
+  if (!textInput) {
+    alert("Please enter some text.");
+    return;
+  }
+  if (textInput.length < 5) {
+    alert("Input is too short.");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://127.0.0.1:5001/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: textInput }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    // --- Toxic Words Detected ---
+    const toxicWords1 = document.getElementById("detectedToxicWords1");
+    toxicWords1.value = data.baseline_toxic_words.length > 0
+      ? data.baseline_toxic_words.join(", ")
+      : "No toxic words detected";
+    toxicWords1.style.backgroundColor = "#FDFBEE";
+
+    const toxicWords2 = document.getElementById("detectedToxicWords2");
+    toxicWords2.value = data.proposed_toxic_words.length > 0
+      ? data.proposed_toxic_words.join(", ")
+      : "No toxic words detected";
+    toxicWords2.style.backgroundColor = "#FDFBEE";
+
+    // --- Toxicity Status + Percentages (MULTI-LINE!) ---
+    const toxicityStatus = document.getElementById("toxicityStatus");
+    toxicityStatus.value = `Status: ${data.baseline_toxicity_status}\n${data.baseline_percentages}`;
+    toxicityStatus.style.backgroundColor = "#FDFBEE";
+
+    const toxicityStatus1 = document.getElementById("toxicityStatus1");
+    toxicityStatus1.value = `Status: ${data.proposed_toxicity_status}\n${data.proposed_percentages}`;
+    toxicityStatus1.style.backgroundColor = "#FDFBEE";
+
+    // --- Inference Time ---
+    const baselineComplexity = document.getElementById("baselineComplexity");
+    baselineComplexity.value = (data.baseline_inference_time * 1000).toFixed(2) + " ms";
+    baselineComplexity.style.backgroundColor = "#FDFBEE";
+
+    const proposedComplexity = document.getElementById("proposedComplexity");
+    proposedComplexity.value = (data.proposed_inference_time * 1000).toFixed(2) + " ms";
+    proposedComplexity.style.backgroundColor = "#FDFBEE";
+
+  } catch (error) {
+    console.error("Error during analysis:", error);
+    alert("An error occurred. Check the console for details.");
+  }
+}
+</script>
+
+  </body>
+</html>
